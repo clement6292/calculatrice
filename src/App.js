@@ -2,23 +2,29 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-  const [input, setInput] = useState('0');
+  const [input, setInput] = useState('0'); // Initialiser à '0'
+  const [result, setResult] = useState(''); // État pour le résultat
+
 
   function handleClick(value) {
-    setInput(prevInput => prevInput === '0' ? value : prevInput + value); // Remplace '0' par la nouvelle valeur
+    const mappedValue = value === 'x' ? '*' : value === '÷' ? '/' : value;
+    setInput(prevInput => prevInput === '0' ? mappedValue : prevInput + mappedValue);
   }
 
   function handleClear() {
     setInput('0');
+    setResult('');
   }
 
   function handleCalculate() {
     try {
-      setInput(eval(input).toString());
+      const evalResult = eval(input.replace(/x/g, '*').replace(/÷/g, '/'));
+      setResult(evalResult.toString()); // Mettre à jour le résultat
     } catch (error) {
-      setInput('Erreur');
+      setResult('Erreur');
     }
   }
+
 
   function handleDelete() {
     setInput(prevInput => prevInput.length > 1 ? prevInput.slice(0, -1) : '0'); // Supprimer un caractère, mais garder '0'
@@ -26,13 +32,13 @@ function App() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-[270px]">
+       <div className="w-[270px]">
         <div className="w-full bg-gray-800 p-1 rounded-xl">
           <div className="flex flex-col h-24 bg-[#AACBAC] m-4 items-center justify-center rounded-lg">
-            <div className="w-full text-sm pr-3 text-end">{input}</div>
+            <div className="w-full text-sm pr-3 text-end">{input}</div> {/* Affiche l'opération */}
             <input 
               type="text" 
-              value={input} 
+              value={result || '0'} // Affiche le résultat ou '0'
               readOnly 
               className="w-full p-2 text-2xl bg-transparent border-none text-right"
             />
